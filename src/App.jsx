@@ -154,8 +154,8 @@ function App() {
       getStudents();
       getNextStudentId();
     } catch (error) {
+      alert("Please fill the field correctly.")
       console.error("Submit error:", error.response?.data || error.message);
-
     }
   };
 
