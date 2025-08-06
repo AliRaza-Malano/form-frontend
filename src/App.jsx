@@ -10,7 +10,7 @@ function App() {
   const initialForm = {
     fullName: "",
     gender: "",
-    dateOfBirth: getTodayDate(),
+    dateOfBirth: "",
     studentPicture: "",
     email: "",
     phone: "",
@@ -23,12 +23,7 @@ function App() {
     previousSchool: "",
     lastClass: "",
     admissionClass: "",
-    admissionDate: getTodayDate()
-  };
-
-  const getTodayDate = () => {
-    const today = new Date();
-    return today.toISOString().split('T')[0]; // returns 'YYYY-MM-DD'
+    admissionDate: ""
   };
 
   const [form, setForm] = useState(initialForm)
@@ -79,7 +74,7 @@ function App() {
     return isoDate ? isoDate.split('T')[0] : '';
   };
 
-  const API_URL = import.meta.env.VITE_API_URL.replace(/\/+$/, "");
+ const API_URL = import.meta.env.VITE_API_URL.replace(/\/+$/, "");
 
 
   // DELETE student
