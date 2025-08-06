@@ -148,6 +148,7 @@ function App() {
       } else {
         const res = await axios.post(`${API_URL}/api/students/add`, form);
         console.log("Student added:", res.data);
+        alert("Successfully Added..")
       }
       setForm(initialForm);
       setEditId(null);
