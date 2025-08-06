@@ -155,6 +155,7 @@ function App() {
       getNextStudentId();
     } catch (error) {
       console.error("Submit error:", error.response?.data || error.message);
+
     }
   };
 
@@ -305,7 +306,8 @@ function App() {
               <input
                 type="text"
                 name='phone'
-                placeholder='+1234567890'
+                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                placeholder='034323567890'
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
               />
