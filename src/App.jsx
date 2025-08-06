@@ -73,7 +73,9 @@ function App() {
   const formatDate = (isoDate) => {
     return isoDate ? isoDate.split('T')[0] : '';
   };
-  const API_URL = import.meta.env.VITE_API_URL;
+
+ const API_URL = import.meta.env.VITE_API_URL.replace(/\/+$/, "");
+
 
   // DELETE student
   const handleDelete = async (id) => {
