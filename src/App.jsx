@@ -73,13 +73,15 @@ function App() {
   const formatDate = (isoDate) => {
     return isoDate ? isoDate.split('T')[0] : '';
   };
+  const API_URL = import.meta.env.VITE_API_URL;
 
+  // DELETE student
   const handleDelete = async (id) => {
     const confirmDelete = window.confirm("Are you sure you want to delete this student?");
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/students/delete/${id}`);
+      await axios.delete(`${API_URL}/api/students/delete/${id}`);
       alert("Student deleted successfully!");
       getStudents(); // refresh the list
     } catch (err) {
@@ -88,31 +90,37 @@ function App() {
     }
   };
 
-
+  // EDIT student
   const handleEdit = (studentData) => {
     setForm({
       ...studentData,
       dateOfBirth: formatDate(studentData.dateOfBirth),
       admissionDate: formatDate(studentData.admissionDate),
     }); // Pre-fill the form with student data
-    setEditId(studentData._id); // store the id to know we're editin
+    setEditId(studentData._id); // store the id to know we're editing
   };
 
-
+  // GET next student ID
   const getNextStudentId = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/students/next-id");
+      const res = await axios.get(`${API_URL}/api/students/next-id`);
       setForm((student) => ({ ...student, studentId: res.data.nextStudentId }));
     } catch (err) {
       console.error("Error fetching next ID:", err);
     }
   };
 
+  // GET all students
   const getStudents = async () => {
-    const res = await axios.get("http://localhost:5000/api/students/all");
-    setStudent(res.data);
-  }
+    try {
+      const res = await axios.get(`${API_URL}/api/students/all`);
+      setStudent(res.data);
+    } catch (err) {
+      console.error("Error fetching students:", err);
+    }
+  };
 
+  // Convert image to base64
   const convertToBase64 = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
@@ -122,9 +130,11 @@ function App() {
     reader.readAsDataURL(file);
   };
 
+  // SUBMIT form (add or update)
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Submitting form:", form); // More descriptive
+    console.log("Submitting form:", form);
+
     if (!form.studentPicture) {
       alert("Please upload a picture!");
       return;
@@ -132,21 +142,93 @@ function App() {
 
     try {
       if (editId) {
-        // Update student
-        await axios.put(`http://localhost:5000/api/students/update/${editId}`, form);
+        await axios.put(`${API_URL}/api/students/update/${editId}`, form);
       } else {
-        // Add new student
-        const res = await axios.post("http://localhost:5000/api/students/add", form);
-        console.log("Student added:", res.data); // Shows what backend returns
+        const res = await axios.post(`${API_URL}/api/students/add`, form);
+        console.log("Student added:", res.data);
       }
       setForm(initialForm);
-      setEditId(null); // clear editing
-      getStudents();   // refresh list
+      setEditId(null);
+      getStudents();
       getNextStudentId();
     } catch (error) {
       console.error("Submit error:", error.response?.data || error.message);
     }
   };
+
+  // const handleDelete = async (id) => {
+  //   const confirmDelete = window.confirm("Are you sure you want to delete this student?");
+  //   if (!confirmDelete) return;
+
+  //   try {
+  //     await axios.delete(`http://localhost:5000/api/students/delete/${id}`);
+  //     alert("Student deleted successfully!");
+  //     getStudents(); // refresh the list
+  //   } catch (err) {
+  //     console.error("Delete failed:", err);
+  //     alert("Error deleting student.");
+  //   }
+  // };
+
+
+  // const handleEdit = (studentData) => {
+  //   setForm({
+  //     ...studentData,
+  //     dateOfBirth: formatDate(studentData.dateOfBirth),
+  //     admissionDate: formatDate(studentData.admissionDate),
+  //   }); // Pre-fill the form with student data
+  //   setEditId(studentData._id); // store the id to know we're editin
+  // };
+
+
+  // const getNextStudentId = async () => {
+  //   try {
+  //     const res = await axios.get("http://localhost:5000/api/students/next-id");
+  //     setForm((student) => ({ ...student, studentId: res.data.nextStudentId }));
+  //   } catch (err) {
+  //     console.error("Error fetching next ID:", err);
+  //   }
+  // };
+
+  // const getStudents = async () => {
+  //   const res = await axios.get("http://localhost:5000/api/students/all");
+  //   setStudent(res.data);
+  // }
+
+  // const convertToBase64 = (e) => {
+  //   const file = e.target.files[0];
+  //   const reader = new FileReader();
+  //   reader.onloadend = () => {
+  //     setForm({ ...form, studentPicture: reader.result });
+  //   };
+  //   reader.readAsDataURL(file);
+  // };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   console.log("Submitting form:", form); // More descriptive
+  //   if (!form.studentPicture) {
+  //     alert("Please upload a picture!");
+  //     return;
+  //   }
+
+  //   try {
+  //     if (editId) {
+  //       // Update student
+  //       await axios.put(`http://localhost:5000/api/students/update/${editId}`, form);
+  //     } else {
+  //       // Add new student
+  //       const res = await axios.post("http://localhost:5000/api/students/add", form);
+  //       console.log("Student added:", res.data); // Shows what backend returns
+  //     }
+  //     setForm(initialForm);
+  //     setEditId(null); // clear editing
+  //     getStudents();   // refresh list
+  //     getNextStudentId();
+  //   } catch (error) {
+  //     console.error("Submit error:", error.response?.data || error.message);
+  //   }
+  // };
 
 
   return (
